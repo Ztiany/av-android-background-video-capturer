@@ -1,0 +1,1 @@
+a video capturer support background recording. 

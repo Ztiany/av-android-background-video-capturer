@@ -1,12 +1,8 @@
 package me.ztiany.capturer;
 
-import android.view.Surface;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public interface OutputProvider {
 
@@ -27,7 +23,7 @@ public interface OutputProvider {
     String PREVIEW = "PREVIEW";
     String STREAM_CONFIGURATION = "StreamConfiguration";
 
-    void onAttach(@NonNull Camera2Operator camera2Operator, @NonNull Components components);
+    void onAttach(@NonNull Camera2Handle camera2Handle, @NonNull Components components);
 
     void onDetach();
 

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 
 import timber.log.Timber;
 
@@ -28,7 +27,7 @@ public class MediaRecorderProvider implements OutputProvider {
 
     private Integer mOrientationHint;
 
-    private Camera2Operator mCamera2Operator;
+    private Camera2Handle mCamera2Handle;
 
     private final List<Size> mSupportedSize = new ArrayList<>();
 
@@ -38,7 +37,7 @@ public class MediaRecorderProvider implements OutputProvider {
     }
 
     @Override
-    public void onAttach(@NonNull Camera2Operator camera2Operator, @NonNull Components components) {
+    public void onAttach(@NonNull Camera2Handle camera2Handle, @NonNull Components components) {
         Timber.d("onAttach is called. mOrientationHint = %s", components.require(ORIENTATION).toString());
         StreamConfigurationMap streamConfigurationMap = components.require(STREAM_CONFIGURATION);
         Size[] outputSizes = streamConfigurationMap.getOutputSizes(MediaRecorder.class);
@@ -47,7 +46,7 @@ public class MediaRecorderProvider implements OutputProvider {
             Timber.i(outputSize.toString());
         }
 
-        mCamera2Operator = camera2Operator;
+        mCamera2Handle = camera2Handle;
         mOrientationHint = components.require(ORIENTATION);
         mSupportedSize.clear();
         mSupportedSize.addAll(Arrays.asList(outputSizes));
@@ -114,7 +113,7 @@ public class MediaRecorderProvider implements OutputProvider {
             }
         }
 
-        mCamera2Operator.startCapturingCameraSession(mMediaRecorder.getSurface(), new CameraCaptureSession.StateCallback() {
+        mCamera2Handle.startCapturingCameraSession(mMediaRecorder.getSurface(), new CameraCaptureSession.StateCallback() {
             @Override
             public void onConfigured(@NonNull CameraCaptureSession session) {
                 mMediaRecorder.start();
@@ -148,7 +147,7 @@ public class MediaRecorderProvider implements OutputProvider {
             mMediaRecorder.stop();
             mMediaRecorder.reset();
             if (recoverPreview) {
-                mCamera2Operator.stopCapturingCameraSession();
+                mCamera2Handle.stopCapturingCameraSession();
             }
         } catch (Exception exception) {
             Timber.e(exception, "MediaRecorderProvider.stop()");

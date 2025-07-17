@@ -5,7 +5,6 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Handler;
 import android.util.Size;
-import android.view.Surface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,11 +22,11 @@ public class FrameReader implements OutputProvider {
     @Nullable
     private FrameListener mFrameListener;
 
-    private Camera2Operator mCamera2Operator;
+    private Camera2Handle mCamera2Handle;
 
     @Override
-    public void onAttach(@NonNull Camera2Operator camera2Operator, @NonNull Components components) {
-        mCamera2Operator = camera2Operator;
+    public void onAttach(@NonNull Camera2Handle camera2Handle, @NonNull Components components) {
+        mCamera2Handle = camera2Handle;
 
         mFrameSize = components.require(PREVIEW);
 

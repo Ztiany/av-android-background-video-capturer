@@ -6,7 +6,7 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public interface Camera2Operator {
+public interface Camera2Handle {
 
     void startCapturingCameraSession(
             @NonNull Surface surface,

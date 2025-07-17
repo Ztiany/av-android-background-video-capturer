@@ -202,7 +202,7 @@ public class Camera2Helper {
 
     };
 
-    private final Camera2Operator mCamera2Operator = new Camera2Operator() {
+    private final Camera2Handle mCamera2Handle = new Camera2Handle() {
 
         @Override
         public void startCapturingCameraSession(
@@ -313,7 +313,7 @@ public class Camera2Helper {
         mPreviewSize = mSizeSelector.getBestSupportedSize(new ArrayList<>(Arrays.asList(configurationMap.getOutputSizes(SurfaceTexture.class))));
 
         if (mOutputProvider != null) {
-            mOutputProvider.onAttach(mCamera2Operator, new OutputProvider.Components() {
+            mOutputProvider.onAttach(mCamera2Handle, new OutputProvider.Components() {
                 {
                     put(OutputProvider.ORIENTATION, getCameraOrientation(mRotation, cameraId));
                     put(OutputProvider.PREVIEW, mPreviewSize);

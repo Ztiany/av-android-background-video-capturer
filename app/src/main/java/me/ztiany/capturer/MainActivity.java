@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
             mCommander.startCapturing(mSessionId, new VideoSpec.Builder()
                     .setFrameRate(30)
                     .setVideoSize(new Size(1920, 1080))
+                    .storePath(generateStorePath())
                     .build()
             );
         }
@@ -148,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mCommander.destroy();
+    }
+
+    private String generateStorePath() {
+        return getExternalFilesDir(null) + "/" + System.currentTimeMillis() + "-video.mp4";
     }
 
 }

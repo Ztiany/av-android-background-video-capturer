@@ -41,9 +41,9 @@ public class MediaRecorderProvider implements OutputProvider {
         Timber.d("onAttach is called. mOrientationHint = %s", components.require(ORIENTATION).toString());
         StreamConfigurationMap streamConfigurationMap = components.require(STREAM_CONFIGURATION);
         Size[] outputSizes = streamConfigurationMap.getOutputSizes(MediaRecorder.class);
-        Timber.i("output sizes for MediaRecorder:");
+        Timber.d("output sizes for MediaRecorder:");
         for (Size outputSize : outputSizes) {
-            Timber.i(outputSize.toString());
+            Timber.d(outputSize.toString());
         }
 
         mCamera2Handle = camera2Handle;
@@ -65,10 +65,6 @@ public class MediaRecorderProvider implements OutputProvider {
         } catch (Exception exception) {
             Timber.e(exception, "MediaRecorderProvider.release()");
         }
-    }
-
-    public void start(@NonNull VideoSpec videoSpec) {
-        start(videoSpec);
     }
 
     public void start(@NonNull VideoSpec videoSpec, @Nullable StartCallback startCallback) {
@@ -102,12 +98,12 @@ public class MediaRecorderProvider implements OutputProvider {
         mMediaRecorder.setVideoSize(realSize.getWidth(), realSize.getHeight());
         mMediaRecorder.setVideoFrameRate(videoSpec.frameRate);
         mMediaRecorder.setOrientationHint(mOrientationHint);
-        mMediaRecorder.setOutputFile(mContext.getExternalFilesDir(null) + "/" + System.currentTimeMillis() + "-video.mp4");
+        mMediaRecorder.setOutputFile(videoSpec.storePath);
 
         try {
             mMediaRecorder.prepare();
-        } catch (IOException e) {
-            Timber.e(e, "MediaRecorderProvider.start()");
+        } catch (IOException ioException) {
+            Timber.e(ioException, "MediaRecorderProvider.start()");
             if (startCallback != null) {
                 startCallback.onResult(false);
             }

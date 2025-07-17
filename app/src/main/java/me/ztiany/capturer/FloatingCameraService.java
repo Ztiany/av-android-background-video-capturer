@@ -72,12 +72,12 @@ public class FloatingCameraService extends Service {
 
         @Override
         public void onCameraOpened(CameraDevice cameraDevice, String cameraId, final Size previewSize, final int displayOrientation, boolean isMirror) {
-            Timber.i("onCameraOpened is called(): previewSize = " + previewSize.getWidth() + "x" + previewSize.getHeight());
+            Timber.d("onCameraOpened is called(): previewSize = " + previewSize.getWidth() + "x" + previewSize.getHeight());
         }
 
         @Override
         public void onCameraClosed() {
-            Timber.i("onCameraClosed is called!");
+            Timber.d("onCameraClosed is called!");
         }
 
         @Override
@@ -216,9 +216,11 @@ public class FloatingCameraService extends Service {
     }
 
     private void destroyFloatingWindow() {
-        mWindowManager.removeView(mFloatingView);
-        mFloatingView = null;
-        mTextureView = null;
+        if (mWindowManager != null) {
+            mWindowManager.removeView(mFloatingView);
+            mFloatingView = null;
+            mTextureView = null;
+        }
     }
 
     private void doStartCapturing(String sessionId, VideoSpec videoSpec) {

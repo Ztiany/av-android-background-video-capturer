@@ -126,7 +126,7 @@ public class Camera2Helper {
             result = (mSensorOrientation - degrees + 360) % 360;
         }
 
-        Timber.i("getCameraOrientation: rotation = " + rotation + " result = " + result + " sensorOrientation = " + mSensorOrientation);
+        Timber.d("getCameraOrientation: rotation = " + rotation + " result = " + result + " sensorOrientation = " + mSensorOrientation);
         return result;
     }
 
@@ -134,19 +134,19 @@ public class Camera2Helper {
 
         @Override
         public void onSurfaceTextureAvailable(@NonNull SurfaceTexture texture, int width, int height) {
-            Timber.i("onSurfaceTextureAvailable: %d, %d", width, height);
+            Timber.d("onSurfaceTextureAvailable: %d, %d", width, height);
             openCamera();
         }
 
         @Override
         public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture texture, int width, int height) {
-            Timber.i("onSurfaceTextureSizeChanged: %d, %d", width, height);
+            Timber.d("onSurfaceTextureSizeChanged: %d, %d", width, height);
             configureTransform(width, height);
         }
 
         @Override
         public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture texture) {
-            Timber.i("onSurfaceTextureDestroyed: ");
+            Timber.d("onSurfaceTextureDestroyed: ");
             return true;
         }
 
@@ -160,7 +160,7 @@ public class Camera2Helper {
 
         @Override
         public void onOpened(@NonNull CameraDevice cameraDevice) {
-            Timber.i("StateCallback.onOpened()");
+            Timber.d("StateCallback.onOpened()");
 
             mCameraOpenCloseLock.release();
 
@@ -174,7 +174,7 @@ public class Camera2Helper {
 
         @Override
         public void onDisconnected(@NonNull CameraDevice cameraDevice) {
-            Timber.i("StateCallback.onDisconnected()");
+            Timber.d("StateCallback.onDisconnected()");
 
             mCameraOpenCloseLock.release();
 
@@ -188,7 +188,7 @@ public class Camera2Helper {
 
         @Override
         public void onError(@NonNull CameraDevice cameraDevice, int error) {
-            Timber.i("StateCallback.onError(): error = %d", error);
+            Timber.d("StateCallback.onError(): error = %d", error);
 
             mCameraOpenCloseLock.release();
 
@@ -285,8 +285,8 @@ public class Camera2Helper {
                     return;
                 }
             }
-        } catch (CameraAccessException e) {
-            Timber.e(e, "setUpCameraOutputs");
+        } catch (CameraAccessException cameraAccessException) {
+            Timber.e(cameraAccessException, "setUpCameraOutputs");
         } catch (NullPointerException e) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
@@ -393,8 +393,8 @@ public class Camera2Helper {
             mBackgroundThread.join();
             mBackgroundThread = null;
             mBackgroundHandler = null;
-        } catch (InterruptedException e) {
-            Timber.e(e, "stopBackgroundThread");
+        } catch (InterruptedException interruptedException) {
+            Timber.e(interruptedException, "stopBackgroundThread");
         }
     }
 
@@ -440,7 +440,7 @@ public class Camera2Helper {
             CameraCaptureSession.StateCallback configureFailed = new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
-                    Timber.i("StateCallback.onConfigured()");
+                    Timber.d("StateCallback.onConfigured()");
                     // The camera is already closed
                     if (null == mCameraDevice) {
                         return;
@@ -453,7 +453,7 @@ public class Camera2Helper {
 
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                    Timber.i("StateCallback.onConfigureFailed()");
+                    Timber.d("StateCallback.onConfigureFailed()");
 
                     if (mCamera2Listener != null) {
                         mCamera2Listener.onCameraError(new Exception("configureFailed"));
@@ -466,8 +466,8 @@ public class Camera2Helper {
             };
 
             mCameraDevice.createCaptureSession(targets, configureFailed, mBackgroundHandler);
-        } catch (CameraAccessException e) {
-            Timber.e(e, "createCameraPreviewSession");
+        } catch (CameraAccessException cameraAccessException) {
+            Timber.e(cameraAccessException, "createCameraPreviewSession");
         }
     }
 

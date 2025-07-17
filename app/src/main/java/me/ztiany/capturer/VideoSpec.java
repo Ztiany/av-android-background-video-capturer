@@ -12,17 +12,20 @@ public class VideoSpec implements Parcelable {
     public final int videoWidth;
     public final int videoHeight;
     public final int frameRate;
+    public final String storePath;
 
     public VideoSpec(Builder builder) {
         videoWidth = builder.videoWidth;
         videoHeight = builder.videoHeight;
         frameRate = builder.frameRate;
+        storePath = builder.storePath;
     }
 
     protected VideoSpec(Parcel in) {
         videoWidth = in.readInt();
         videoHeight = in.readInt();
         frameRate = in.readInt();
+        storePath = in.readString();
     }
 
     public static final Creator<VideoSpec> CREATOR = new Creator<>() {
@@ -47,12 +50,14 @@ public class VideoSpec implements Parcelable {
         dest.writeInt(videoWidth);
         dest.writeInt(videoHeight);
         dest.writeInt(frameRate);
+        dest.writeString(storePath);
     }
 
     public static class Builder {
         private int videoWidth;
         private int videoHeight;
         private int frameRate;
+        private String storePath;
 
         public Builder setVideoSize(Size size) {
             this.videoWidth = size.getWidth();
@@ -62,6 +67,11 @@ public class VideoSpec implements Parcelable {
 
         public Builder setFrameRate(int frameRate) {
             this.frameRate = frameRate;
+            return this;
+        }
+
+        public Builder storePath(String storePath) {
+            this.storePath = storePath;
             return this;
         }
 

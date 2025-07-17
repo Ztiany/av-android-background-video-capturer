@@ -1,6 +1,5 @@
 package me.ztiany.capturer;
 
-import android.content.Context;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaRecorder;
@@ -23,16 +22,13 @@ public class MediaRecorderProvider implements OutputProvider {
 
     private final AtomicBoolean mIsRecording = new AtomicBoolean(false);
 
-    private final Context mContext;
-
     private Integer mOrientationHint;
 
     private Camera2Handle mCamera2Handle;
 
     private final List<Size> mSupportedSize = new ArrayList<>();
 
-    public MediaRecorderProvider(Context context) {
-        mContext = context;
+    public MediaRecorderProvider() {
         mMediaRecorder = new MediaRecorder();
     }
 
@@ -85,6 +81,7 @@ public class MediaRecorderProvider implements OutputProvider {
                 .orElse(null);
 
         if (realSize == null) {
+            mIsRecording.set(false);
             if (startCallback != null) {
                 startCallback.onResult(false);
             }
@@ -103,6 +100,7 @@ public class MediaRecorderProvider implements OutputProvider {
         try {
             mMediaRecorder.prepare();
         } catch (IOException ioException) {
+            mIsRecording.set(false);
             Timber.e(ioException, "MediaRecorderProvider.start()");
             if (startCallback != null) {
                 startCallback.onResult(false);

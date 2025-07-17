@@ -164,7 +164,7 @@ public class FloatingCameraService extends Service {
 
     private void startCamera() {
         if (mCamera2Helper == null) {
-            mMediaRecorderProvider = new MediaRecorderProvider(this);
+            mMediaRecorderProvider = new MediaRecorderProvider();
 
             mCamera2Helper = new Camera2Helper.Builder()
                     .context(getApplicationContext())

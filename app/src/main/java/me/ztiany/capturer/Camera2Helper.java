@@ -275,25 +275,25 @@ public class Camera2Helper {
         mContext = null;
     }
 
-    private void setUpCameraOutputs(CameraManager cameraManager) {
+    private boolean setUpCameraOutputs(CameraManager cameraManager) {
         try {
             if (configCameraParams(cameraManager, mSpecifiedCameraId)) {
-                return;
+                return true;
             }
             for (String cameraId : cameraManager.getCameraIdList()) {
                 if (configCameraParams(cameraManager, cameraId)) {
-                    return;
+                    return true;
                 }
             }
-        } catch (CameraAccessException cameraAccessException) {
-            Timber.e(cameraAccessException, "setUpCameraOutputs");
-        } catch (NullPointerException e) {
+        } catch (CameraAccessException | IllegalArgumentException exception) {
+            Timber.e(exception, "setUpCameraOutputs");
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
             if (mCamera2Listener != null) {
-                mCamera2Listener.onCameraError(e);
+                mCamera2Listener.onCameraError(exception);
             }
         }
+        return false;
     }
 
     private boolean configCameraParams(CameraManager manager, @CameraId String cameraId) throws CameraAccessException {
@@ -316,7 +316,7 @@ public class Camera2Helper {
             mOutputProvider.onAttach(mCamera2Handle, new OutputProvider.Components() {
                 {
                     put(OutputProvider.ORIENTATION, getCameraOrientation(mRotation, cameraId));
-                    put(OutputProvider.PREVIEW, mPreviewSize);
+                    put(OutputProvider.PREVIEW_SIZE, mPreviewSize);
                     put(OutputProvider.WORKER, mBackgroundHandler);
                     put(OutputProvider.STREAM_CONFIGURATION, configurationMap);
                 }
@@ -337,12 +337,20 @@ public class Camera2Helper {
                 Timber.e("Time out waiting to lock camera opening.");
                 return;
             }
-            setUpCameraOutputs(cameraManager);
-            configureTransform(mTextureView.getWidth(), mTextureView.getHeight());
-            cameraManager.openCamera(mCameraId, mDeviceStateCallback, mBackgroundHandler);
-        } catch (CameraAccessException | InterruptedException e) {
+            if (setUpCameraOutputs(cameraManager)) {
+                configureTransform(mTextureView.getWidth(), mTextureView.getHeight());
+                cameraManager.openCamera(mCameraId, mDeviceStateCallback, mBackgroundHandler);
+            }
+        } catch (CameraAccessException exception) {
+            Timber.e(exception, "openCamera");
+            mCameraOpenCloseLock.release();
             if (mCamera2Listener != null) {
-                mCamera2Listener.onCameraError(e);
+                mCamera2Listener.onCameraError(exception);
+            }
+        } catch (InterruptedException exception) {
+            Timber.e(exception, "openCamera");
+            if (mCamera2Listener != null) {
+                mCamera2Listener.onCameraError(exception);
             }
         }
     }

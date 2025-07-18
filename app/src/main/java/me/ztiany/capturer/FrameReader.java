@@ -28,7 +28,7 @@ public class FrameReader implements OutputProvider {
     public void onAttach(@NonNull Camera2Handle camera2Handle, @NonNull Components components) {
         mCamera2Handle = camera2Handle;
 
-        mFrameSize = components.require(PREVIEW);
+        mFrameSize = components.require(PREVIEW_SIZE);
 
         mImageReader = ImageReader.newInstance(
                 mFrameSize.getWidth(),
